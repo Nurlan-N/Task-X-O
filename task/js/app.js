@@ -138,6 +138,18 @@ function findBestMove(board) {
     return checkWin;
   } else if (blockWin) {
     return blockWin;
+  } else {
+    if (board[4].value !== '') {
+      if (board[2].value == '') {
+        return 2;
+      }
+      if (board[6].value == '') {
+        return 6;
+      }
+      if (board[8].value == '') {
+        return 8;
+      }
+    }
   }
 }
 
