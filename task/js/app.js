@@ -118,9 +118,7 @@ function blockWinIndex(board) {
 
 function  findBestMove(board) {
   const checkWin = checkWinIndex(board);
-  console.log("🚀 ~ file: app.js:121 ~ findBestMove ~ checkWin:", checkWin)
   const blockWin = blockWinIndex(board);
-  console.log("🚀 ~ file: app.js:123 ~ findBestMove ~ blockWin:", blockWin)
 
   if (checkWin > -1) {
     return checkWin;
