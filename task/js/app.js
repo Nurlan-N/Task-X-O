@@ -86,17 +86,21 @@ function render(board) {
   }
 }
 
-function level2(board) {
-  
-  if (checkWinIndex(board)) {
-    return checkWinIndex(board)
-  }else{
-    return blockWinIndex(board)
-  }
-  
-}
+// function level2(board) {
+//   const checkWin = checkWinIndex(board);
+//   const blockWin = blockWinIndex(board);
 
-function checkWinIndex(board){
+//   if (checkWin) {
+//     return checkWinIndex(board);
+//   } else if (blockWin) {
+//     return blockWin
+//   }
+//   // else {
+//   //   return findBestMove(board);
+//   // }
+// }
+
+function checkWinIndex(board) {
   for (let i = 0; i < winIndex.length; i++) {
     const [a, b, c] = winIndex[i];
 
@@ -109,29 +113,50 @@ function checkWinIndex(board){
     if (board[b].value === 'o' && board[b].value === board[c].value && board[a].value === '') {
       return a;
     }
-    
   }
 }
-function blockWinIndex(board){
+function blockWinIndex(board) {
   for (let i = 0; i < winIndex.length; i++) {
     const [a, b, c] = winIndex[i];
-
+    if (board[b].value === 'x' && board[b].value === board[c].value && board[a].value === '') {
+      return a;
+    }
     if (board[a].value === 'x' && board[a].value === board[b].value && board[c].value === '') {
       return c;
     }
     if (board[a].value === 'x' && board[a].value === board[c].value && board[b].value === '') {
       return b;
     }
-    if (board[b].value === 'x' && board[b].value === board[c].value && board[a].value === '') {
-      return a;
+  }
+}
+
+function findBestMove(board) {
+  const checkWin = checkWinIndex(board);
+  const blockWin = blockWinIndex(board);
+
+  if (checkWin) {
+    return checkWin;
+  } else if (blockWin) {
+    return blockWin;
+  } else {
+    if (board[4].value === 'x') {
+      if (board[2].value == '') {
+        return 2;
+      }
+      if (board[6].value == '') {
+        return 6;
+      }
+      if (board[8].value == '') {
+        return 8;
+      }
     }
   }
 }
 
 function bot(board) {
-  const index = level2(board);
+  const index = findBestMove(board);
 
-  if (index) {
+  if (typeof index !== 'undefined') {
     if (bootPlay && !gameOver) {
       board[index].value = 'o';
       bootPlay = false;
@@ -143,17 +168,29 @@ function bot(board) {
     const emptyBox = board.filter((b) => b.value === '');
     if (emptyBox.length > 0) {
       const i = Math.floor(Math.random() * emptyBox.length);
-    const index = emptyBox[i].id;
+      let index = board[4].value === '' ? 4 : board[0].value === '' ? 0 : emptyBox[i].id;
+      if (
+        (board[2].value === 'x' && board[6].value === 'x') ||
+        (board[0].value === 'x' && board[8].value === 'x') ||
+        (board[5].value === 'x' && board[0].value === 'x' && board[1].value !== 'o')
+      ) {
+        index = 1;
+      }
+      if (board[5].value === 'x' && board[6].value === 'x' && board[8].value !== 'o') {
+        index = 8;
+      }
 
-    if (bootPlay && !gameOver) {
-      board[index].value = 'o';
-      bootPlay = false;
-      checkWinner(board);
+      console.log('🚀 ~ file: app.js:160 ~ bot ~ index:', index);
+
+      if (bootPlay && !gameOver) {
+        board[index].value = 'o';
+        bootPlay = false;
+        checkWinner(board);
+        render(board);
+      }
+    } else {
+      gameOver = true;
       render(board);
-    }
-    }else{
-      gameOver =true
-      render(board)
     }
   }
 }
